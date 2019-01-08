@@ -566,7 +566,10 @@ def checkTikaServer(scheme="http", serverHost=ServerHost, port=Port, tikaServerJ
 
     urlp = urlparse(tikaServerJar)
     serverEndpoint = '%s://%s:%s' % (scheme, serverHost, port)
+   #NO WAM 12/20/18
+   '''
     jarPath = os.path.join(TikaJarPath, 'tika-server.jar')
+
     if 'localhost' in serverEndpoint or '127.0.0.1' in serverEndpoint:
         alreadyRunning = checkPortIsOpen(serverHost, port)
 
@@ -582,6 +585,7 @@ def checkTikaServer(scheme="http", serverHost=ServerHost, port=Port, tikaServerJ
             if not status:
                 log.error("Failed to receive startup confirmation from startServer.")
                 raise RuntimeError("Unable to start Tika server.")
+    '''
     return serverEndpoint
 
 def checkJarSig(tikaServerJar, jarPath):
