@@ -105,18 +105,18 @@ Example usage as python client:
 
 import sys, os, getopt, time, codecs, re
 try:
-    unicode_string = unicode 
+    unicode_string = str 
     binary_string = str
 except NameError:
     unicode_string = str
     binary_string = bytes
 
 try:
-    from urllib import urlretrieve
+    from urllib.request import urlretrieve
 except ImportError:
     from urllib.request import urlretrieve
 try:
-    from urlparse import urlparse
+    from urllib.parse import urlparse
 except ImportError:
     from urllib.parse import urlparse as urlparse
 
@@ -237,7 +237,7 @@ def getPaths(urlOrPaths):
     :param urlOrPaths: the url or path to be scanned
     :return: ``list`` of paths
     '''
-    if isinstance(urlOrPaths, basestring):
+    if isinstance(urlOrPaths, str):
         #FIXME: basestring is undefined
         urlOrPaths = [urlOrPaths]  # do not recursively walk over letters of a single path which can include "/"
     paths = []
@@ -277,7 +277,7 @@ def parseAndSave(option, urlOrPaths, outDir=None, serverEndpoint=ServerEndpoint,
             log.info('Writing %s' % metaPath)
             with open(metaPath, 'w', 'utf-8') as f:
                 f.write(parse1(option, path, serverEndpoint, verbose, tikaServerJar, \
-                                    responseMimeType, services)[1] + u"\n")
+                                    responseMimeType, services)[1] + "\n")
         metaPaths.append(metaPath)
     return metaPaths
 
@@ -365,8 +365,8 @@ def detectLang1(option, urlOrPath, serverEndpoint=ServerEndpoint, verbose=Verbos
     '''
     path, mode = getRemoteFile(urlOrPath, TikaFilesPath)
     if option not in services:
-        log.exception('Language option must be one of %s ' % binary_string(services.keys()))
-        raise TikaException('Language option must be one of %s ' % binary_string(services.keys()))
+        log.exception('Language option must be one of %s ' % binary_string(list(services.keys())))
+        raise TikaException('Language option must be one of %s ' % binary_string(list(services.keys())))
     service = services[option]
     status, response = callServer('put', serverEndpoint, service, open(path, 'rb'),
             {'Accept': responseMimeType}, verbose, tikaServerJar)
@@ -461,8 +461,8 @@ def detectType1(option, urlOrPath, serverEndpoint=ServerEndpoint, verbose=Verbos
     '''
     path, mode = getRemoteFile(urlOrPath, TikaFilesPath)
     if option not in services:
-        log.exception('Detect option must be one of %s' % binary_string(services.keys()))
-        raise TikaException('Detect option must be one of %s' % binary_string(services.keys()))
+        log.exception('Detect option must be one of %s' % binary_string(list(services.keys())))
+        raise TikaException('Detect option must be one of %s' % binary_string(list(services.keys())))
     service = services[option]
     status, response = callServer('put', serverEndpoint, service, open(path, 'rb'),
             {
@@ -524,8 +524,8 @@ def callServer(verb, serverEndpoint, service, data, headers, verbose=Verbose, ti
 
     serviceUrl  = serverEndpoint + service
     if verb not in httpVerbs:
-        log.exception('Tika Server call must be one of %s' % binary_string(httpVerbs.keys()))
-        raise TikaException('Tika Server call must be one of %s' % binary_string(httpVerbs.keys()))
+        log.exception('Tika Server call must be one of %s' % binary_string(list(httpVerbs.keys())))
+        raise TikaException('Tika Server call must be one of %s' % binary_string(list(httpVerbs.keys())))
     verbFn = httpVerbs[verb]
 
     if Windows and hasattr(data, "read"):
@@ -537,8 +537,8 @@ def callServer(verb, serverEndpoint, service, data, headers, verbose=Verbose, ti
 
     resp = verbFn(serviceUrl, encodedData, headers=headers, verify=False)
     if verbose:
-        print(sys.stderr, "Request headers: ", headers)
-        print(sys.stderr, "Response headers: ", resp.headers)
+        print((sys.stderr, "Request headers: ", headers))
+        print((sys.stderr, "Response headers: ", resp.headers))
     if resp.status_code != 200:
         log.warning('Tika server returned status: %d', resp.status_code)
 
@@ -566,8 +566,8 @@ def checkTikaServer(scheme="http", serverHost=ServerHost, port=Port, tikaServerJ
 
     urlp = urlparse(tikaServerJar)
     serverEndpoint = '%s://%s:%s' % (scheme, serverHost, port)
-   #NO WAM 12/20/18
-   '''
+    '''#NO WAM 12/20/18'''
+    '''
     jarPath = os.path.join(TikaJarPath, 'tika-server.jar')
 
     if 'localhost' in serverEndpoint or '127.0.0.1' in serverEndpoint:

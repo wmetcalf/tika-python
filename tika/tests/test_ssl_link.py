@@ -6,7 +6,7 @@ import os
 import shutil
 
 try:
-    from urllib import urlretrieve
+    from urllib.request import urlretrieve
 except ImportError:
     from urllib.request import urlretrieve
 

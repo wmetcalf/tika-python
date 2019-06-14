@@ -64,7 +64,7 @@ def test_suite():
         try:
             suite.addTest(CreateTest.parameterize(RemoteTest,param1=x))
         except IOError as e:
-            print(e.strerror)    
+            print((e.strerror))    
     return suite        
 
 def test_url():

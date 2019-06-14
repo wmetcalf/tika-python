@@ -7,8 +7,8 @@ from tika import unpack
 
 class CreateTest(unittest.TestCase):
     "Test different encodings"
-    text_utf8 = u"Hello, world!! 😎 👽"
-    text_ascii = u"Hello, world!!"
+    text_utf8 = "Hello, world!! 😎 👽"
+    text_ascii = "Hello, world!!"
 
     def test_utf8(self):
         with NamedTemporaryFile("w+b", prefix='tika-python', suffix='.txt', dir='/tmp') as f:
