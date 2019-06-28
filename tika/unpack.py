@@ -78,9 +78,9 @@ def _parse(tarOutput):
         metadataMember = tarFile.getmember("__METADATA__")
         if not metadataMember.issym() and metadataMember.isfile():
             if version_info.major >= 3:
-                metadataFile = _text_wrapper(tarFile.extractfile(metadataMember),encoding='utf8').read()
+                metadataFile = _text_wrapper(tarFile.extractfile(metadataMember),encoding='utf8').readlines()
             else:   
-                metadataFile = _text_wrapper(tarFile.extractfile(metadataMember),encoding='utf8').read().decode('utf8')
+                metadataFile = _text_wrapper(tarFile.extractfile(metadataMember))
             metadataReader = csv.reader(metadataFile)
             for metadataLine in metadataReader:
                 # each metadata line comes as a key-value pair, with list values
