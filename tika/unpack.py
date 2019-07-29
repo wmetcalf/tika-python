@@ -62,8 +62,11 @@ def _parse(tarOutput):
     parsed = {}
     if not tarOutput:
         return parsed
+
     elif tarOutput[1] is None or tarOutput[1] == b"":
         return parsed
+
+    parsed["status"] = tarOutput[0]
 
     tarFile = tarfile.open(fileobj=BytesIO(tarOutput[1]))
 

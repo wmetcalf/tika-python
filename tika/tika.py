@@ -140,6 +140,7 @@ from subprocess import Popen
 from subprocess import STDOUT
 from os import walk
 import logging
+from requests import ReadTimeout, ConnectTimeout, Timeout, ConnectionError
 
 log_path = os.getenv('TIKA_LOG_PATH', tempfile.gettempdir())
 log_file = os.path.join(log_path, 'tika.log')
@@ -176,6 +177,7 @@ Translator = os.getenv(
     'TIKA_TRANSLATOR',
     "org.apache.tika.language.translate.Lingo24Translator")
 TikaClientOnly = os.getenv('TIKA_CLIENT_ONLY', False)
+TikaRequestsTimeout = os.getenv('TIKA_REQUESTS_TIMEOUT', 120)
 TikaServerClasspath = os.getenv('TIKA_SERVER_CLASSPATH', '')
 TikaStartupSleep = float(os.getenv('TIKA_STARTUP_SLEEP', 5))
 TikaStartupMaxRetry = int(os.getenv('TIKA_STARTUP_MAX_RETRY', 3))
@@ -519,6 +521,7 @@ def callServer(verb, serverEndpoint, service, data, headers, verbose=Verbose, ti
         classpath = TikaServerClasspath
     
     global TikaClientOnly
+    global TikaRequestsTimeout
     if not TikaClientOnly:
         serverEndpoint = checkTikaServer(scheme, serverHost, port, tikaServerJar, classpath, config_path)
 
@@ -534,8 +537,14 @@ def callServer(verb, serverEndpoint, service, data, headers, verbose=Verbose, ti
     encodedData = data
     if type(data) is unicode_string:
         encodedData = data.encode('utf-8')
-
-    resp = verbFn(serviceUrl, encodedData, headers=headers, verify=False)
+    try:
+        resp = verbFn(serviceUrl, encodedData, headers=headers, verify=False, timeout=TikaRequestsTimeout)
+    except Timeout as e:
+        return(666,'Timeout talking to Tika Server')
+    except ConnectionError as e:
+        return(667,'ConnectionError talking to Tika Server')        
+    except Exception as e:
+        return(668,'Unknown Requests error')
     if verbose:
         print((sys.stderr, "Request headers: ", headers))
         print((sys.stderr, "Response headers: ", resp.headers))
