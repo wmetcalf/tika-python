@@ -67,7 +67,8 @@ def _parse(tarOutput):
         return parsed
 
     parsed["status"] = tarOutput[0]
-
+    if parsed["status"] == 666 or parsed["status"] == 667 or parsed["status"] == 668:
+        return parsed
     tarFile = tarfile.open(fileobj=BytesIO(tarOutput[1]))
 
     # get the member names

@@ -72,8 +72,9 @@ def _parse(jsonOutput):
         return parsed
     
     parsed["status"] = jsonOutput[0]
-    if jsonOutput[1] == None or jsonOutput[1] == "":
+    if jsonOutput[1] == None or jsonOutput[1] == "" or parsed["status"] == 666 or parsed["status"] == 667 or parsed["status"] == 668:
         return parsed
+
     realJson = json.loads(jsonOutput[1])
 
     content = ""
